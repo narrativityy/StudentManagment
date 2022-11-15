@@ -1,4 +1,3 @@
-package cs141.jmcrowley.Project;
 import java.util.*;
 
 public class StudentManager {
