@@ -1,5 +1,3 @@
-package cs141.jmcrowley.Project.HannahFiles;
-
 import java.util.*;
 
 public class StudentManagerCaller {
