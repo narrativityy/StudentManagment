@@ -12,7 +12,17 @@ public class StudentManager {
     	// add a student
     	public void addStudent() {	
     		System.out.print("Enter ID: ");
-            int id = scnr.nextInt();
+			int id;
+			if (scnr.hasNextInt()) {
+				id = scnr.nextInt();
+			} 
+            else {
+				while (!scnr.hasNextInt()) {
+					System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+				}
+				id = scnr.nextInt();
+			}
             System.out.print("Enter Name: ");
             String name = scnr.nextLine();
             name = scnr.nextLine();            
@@ -83,23 +93,25 @@ public class StudentManager {
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     		for (int i = 0; i < studentSystem.size(); i++) {
     			studentSystem.get(i).printStudent();
-    		}
-    		
-    		 // error checking
-            int userIndex = verifyIndexInt();
-            while (userIndex >= studentSystem.size() || userIndex < 0) {
-				System.out.print("Error! Please enter a valid corresponding number: ");
-				userIndex = verifyIndexInt();
 			}
-            
-            // 
-            System.out.println("\n" + studentSystem.get(userIndex).getName() + "'s Current Class: " + studentSystem.get(userIndex).getClass());
-            
-            System.out.print("What would you like to change it to? ");
-            String userClass = scnr.next();
-            studentSystem.get(userIndex).setGrade(userClass);
-    	}
-    	
+		}
+
+		// print students names
+		public void printStudentsNames() {
+			for (int i = 0; i < studentSystem.size(); i++) {
+				studentSystem.get(i).printName();
+			}
+		}
+
+		public void printSpecificStudent() {
+			for (int i = 0; i < studentSystem.size(); i++) {
+				System.out.println(i + 1 + ": " + studentSystem.get(i).getName());
+			}
+			System.out.print("Which student would you like to print? ");
+			int choice = verifyIndexInt();
+			System.out.println("------------------------------------------------");
+			studentSystem.get(choice).printStudent();
+		}
     	
     	// print one student's grade
     	public void printGrade() {

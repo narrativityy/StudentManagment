@@ -13,7 +13,7 @@ public class StudentManagerCaller {
         System.out.println("~~ Welcome to the Student Management System 1.0 ~~");
         
 		do {
-			System.out.println("~~ CHOOSE AN OPTION ~~");
+			System.out.println("            ~~ CHOOSE AN OPTION ~~");
             System.out.println("\n1. Add a Student");
             System.out.println("2. Remove a Student");
             System.out.println("3. Print Students");
@@ -27,7 +27,8 @@ public class StudentManagerCaller {
             // error checking - make sure that an int is next
             if (scnr.hasNextInt()) {
 				choice = scnr.nextInt();
-			} else {
+			} 
+            else {
 				while (!scnr.hasNextInt()) {
 					System.out.print("Error! Please enter a valid integer: ");
 					scnr.next();
@@ -55,12 +56,34 @@ public class StudentManagerCaller {
                
                 // print all students info
                 case 3:
-                	System.out.println("~ NOW PRINTING ALL STUDENTS ~");
-                    students.printStudents();
-                    System.out.println("------------------------------------------------");
+                    System.out.println("1: Print All Students");
+                    System.out.println("2: Print a Specific Student");
+                    System.out.print("Choose an action: ");
+                    do {
+                        if (scnr.hasNextInt()) {
+                            choice = scnr.nextInt();
+                        } 
+                        else {
+                            while (!scnr.hasNextInt()) {
+                                System.out.print("Error! Please enter a valid integer: ");
+                                scnr.next();
+                            }
+                            choice = scnr.nextInt();
+                        }
+                        switch(choice) {
+                            case 1:    
+                                System.out.println("~ NOW PRINTING ALL STUDENTS ~");
+                                students.printStudents();
+                                System.out.println("------------------------------------------------");
+                                break;
+                            case 2:
+                                System.out.println("------------------------------------------------");
+                                students.printSpecificStudent();
+                                break;
+                        }
+                    } while(choice < 1 && choice > 2);
                     break;
-                
-                    
+
                 // print one student's grade
                 case 4:
                 	System.out.println("~ NOW PRINTING A GRADE ~");
