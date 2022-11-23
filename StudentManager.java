@@ -1,83 +1,162 @@
 import java.util.*;
 
 public class StudentManager {
-    public static void main(String[] args) {
-        ArrayList<Student> students = new ArrayList<Student>();
-        Scanner scnr = new Scanner(System.in);
-        int continueVal = 0;
-        int choice;
+    	private ArrayList <Student> studentSystem;
+    	Scanner scnr = new Scanner(System.in);
 
-        System.out.println("~~ Welcome to the Student Management System 1.0 ~~");
+    	// constructor - no parameters
+    	public StudentManager() {
+    		studentSystem = new ArrayList<Student>(); // now making dynamic space for customerCart
+    	}	
+    	
+    	// add a student
+    	public void addStudent() {	
+    		System.out.print("Enter ID: ");
+			int id;
+			if (scnr.hasNextInt()) {
+				id = scnr.nextInt();
+			} 
+            else {
+				while (!scnr.hasNextInt()) {
+					System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+				}
+				id = scnr.nextInt();
+			}
+            System.out.print("Enter Name: ");
+            String name = scnr.nextLine();
+            name = scnr.nextLine();            
+            System.out.print("Enter Course: ");
+            String course = scnr.nextLine();        
+            System.out.print("Enter Teacher: ");
+            String teacher = scnr.nextLine();        
+            System.out.print("Enter Grade: ");
+            String grade = scnr.nextLine();
+            
+    		Student newStudent = new Student(id, name, course, teacher, grade);     
+    		studentSystem.add(newStudent);
+    	}
+    	
+    	// remove a student
+    	public void removeStudent() {    	
+    		if (studentSystem.size() == 0) {
+    			System.out.println("ERROR! You have no students in your system.");
+    			return;
+    		}
+    		
+    		formatPrintAll();
+            System.out.print("\nWhich Student would you like to remove? ");
+            int removeVal = verifyIndexInt();
+            studentSystem.remove(removeVal);
+    	}
+    	
+    	// update grade
+    	public void updateGrade() {
+    		if (studentSystem.size() == 0) {
+    			System.out.println("ERROR! You have no students in your system.");
+    			return;
+    		}
+    		
+    		formatPrintAll();
+            System.out.print("\nWhich Student's grade would you like to change? ");
+            
+            // error checking
+            int userIndex = verifyIndexInt();
+            while (userIndex >= studentSystem.size() || userIndex < 0) {
+				System.out.print("Error! Please enter a valid corresponding number: ");
+				userIndex = verifyIndexInt();
+			}
+            
+            System.out.println("\n" + studentSystem.get(userIndex).getName() + "'s Current Grade: " + studentSystem.get(userIndex).getGrade());
+            
+            System.out.print("What would you like to change it to? ");
+            String gradeVal = scnr.next();
+            studentSystem.get(userIndex).setGrade(gradeVal);
+    	}
+    	
+    	// update class
+    	public void updateClass() {
+    		if (studentSystem.size() == 0) {
+    			System.out.println("ERROR! You have no students in your system.");
+    			return;	
+    		}
+    		
+    		formatPrintAll();
+            System.out.print("\nWhich Student's class would you like to change? ");
+    		
+    		
+    	}
+    	
+    	// print students
+    	public void printStudents() {
+    		System.out.println("TOTAL NUM OF STUDENTS: " + Student.getNumStudents());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    		for (int i = 0; i < studentSystem.size(); i++) {
+    			studentSystem.get(i).printStudent();
+			}
+		}
 
-        do{
-            System.out.println("\n1. Add a Student");
-            System.out.println("2. Remove a Student");
-            System.out.println("3. Print Students");
-            System.out.println("4: View a Student's Grades");
-            System.out.println("5: Update a Student's Grades");
-            System.out.println("6: View a Student's Class");
-            System.out.println("7: Change a Student's Class");
-            System.out.println("8: Exit");
-            System.out.print("\nChoose an action: ");
-            choice = scnr.nextInt();
-            System.out.println("");
+		// print students names
+		public void printStudentsNames() {
+			for (int i = 0; i < studentSystem.size(); i++) {
+				studentSystem.get(i).printName();
+			}
+		}
 
-            switch(choice) {
-                case 1:
-                    System.out.print("Enter ID: ");
-                    int id = scnr.nextInt();
-                    System.out.print("Enter Name: ");
-                    String name = scnr.nextLine();
-                    name = scnr.nextLine();
-                    System.out.print("Enter Course: ");
-                    String course = scnr.nextLine();
-                    System.out.print("Enter Teacher: ");
-                    String teacher = scnr.nextLine();
-                    System.out.print("Enter Grade: ");
-                    String grade = scnr.nextLine();
-                    students.add(new Student(id, name, course, teacher, grade));
-                    break;
-                case 2:
-                    for (int i = 0; i < students.size(); i++) {
-                        System.out.println(i + 1 + ": " + students.get(i).getName());
-                    }
-                    System.out.print("\nWhich Student would you like to remove? ");
-                    int removeVal = scnr.nextInt()-1;
-                    students.remove(removeVal);
-                case 3:
-                    for (int i = 0; i < students.size(); i++) {
-                        System.out.println("ID: " + students.get(i).getId());
-                        System.out.println("Name: " + students.get(i).getName());
-                        System.out.println("Course: " + students.get(i).getCourse());
-                        System.out.println("Teacher: " + students.get(i).getTeacher());
-                        System.out.println("Grade: " + students.get(i).getGrade() + "\n");
-                    }
-                    break;
-                case 4:
-                    for (int i = 0; i < students.size(); i++) {
-                        System.out.println(i + 1 + ": " + students.get(i).getName());
-                    }
-                    System.out.print("\nWhich Student's grade would you like to view? ");
-                    int viewVal = scnr.nextInt() - 1;
-                    System.out.println("\nGrade: " + students.get(viewVal).getGrade());
-                    break;
-                case 5:
-                    for (int i = 0; i < students.size(); i++) {
-                        System.out.println(i + 1 + ": " + students.get(i).getName());
-                    }
-                    System.out.print("\nWhich Student's grade would you like to change? ");
-                    int gradeChangeVal = scnr.nextInt() - 1;
-                    System.out.println("\nCurrent Grade: " + students.get(gradeChangeVal).getGrade());
-                    System.out.print("What would you like to change it to? ");
-                    String gradeVal = scnr.next();
-                    students.get(gradeChangeVal).setGrade(gradeVal);
-                    break;
-                case 8:
-                    continueVal = 1;
-                    break;
-            }
-
-        } while (continueVal == 0);
-        scnr.close();
-    }
+		public void printSpecificStudent() {
+			for (int i = 0; i < studentSystem.size(); i++) {
+				System.out.println(i + 1 + ": " + studentSystem.get(i).getName());
+			}
+			System.out.print("Which student would you like to print? ");
+			int choice = verifyIndexInt();
+			System.out.println("------------------------------------------------");
+			studentSystem.get(choice).printStudent();
+		}
+    	
+    	// print one student's grade
+    	public void printGrade() {
+    		if (studentSystem.size() == 0) {
+    			System.out.println("ERROR! You have no students in your system.");
+    			return;
+    		}
+    		
+    		formatPrintAll();
+    		System.out.print("\nWhich Student's grade would you like to view? ");
+    		
+    		// error checking
+    		int userIndex = verifyIndexInt();
+    		while (userIndex >= studentSystem.size() || userIndex < 0) {
+				System.out.print("Error! Please enter a valid corresponding number: ");
+				userIndex = verifyIndexInt();
+			}
+			
+            System.out.println("\nGrade: " + studentSystem.get(userIndex).getGrade());
+    	}
+    	
+    	
+  
+    	// private methods
+    	// way of printing students to user
+    	private void formatPrintAll() {
+    		 for (int i = 0; i < studentSystem.size(); i++) {
+                 System.out.println(i + 1 + ": " + studentSystem.get(i).getName());
+             }
+    	}
+    	
+    	// error checking 
+    	private int verifyIndexInt() {
+    		int userIndex;
+    		if (scnr.hasNextInt()) {
+				userIndex = scnr.nextInt() - 1;
+			} else {
+				while (!scnr.hasNextInt()) {
+					System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+				}
+				userIndex = scnr.nextInt() - 1;
+			}
+    		return userIndex;
+    	}
+    	
+    	
 }
