@@ -1,28 +1,34 @@
+import java.io.*;
 import java.util.*;
 
 public class StudentManager {
     	private ArrayList <Student> studentSystem;
     	Scanner scnr = new Scanner(System.in);
+    	boolean needInput; // for error checking
 
     	// constructor - no parameters
-    	public StudentManager() {
-    		studentSystem = new ArrayList<Student>(); // now making dynamic space for customerCart
-    	}	
+    	public StudentManager() throws FileNotFoundException {
+    			studentSystem = new ArrayList<Student>(); // now making dynamic space for customerCart
+				studentSystem = FileHandler.printFile();
+			}	
     	
     	// add a student
     	public void addStudent() {	
     		System.out.print("Enter ID: ");
-			int id;
-			if (scnr.hasNextInt()) {
-				id = scnr.nextInt();
-			} 
-            else {
-				while (!scnr.hasNextInt()) {
-					System.out.print("Error! Please enter a valid integer: ");
+            int id = -1;
+            
+            needInput = true;
+    		while (needInput) {
+    			try {
+    				id = scnr.nextInt();
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
 					scnr.next();
-				}
-				id = scnr.nextInt();
-			}
+        		}
+    		}
+    		
             System.out.print("Enter Name: ");
             String name = scnr.nextLine();
             name = scnr.nextLine();            
@@ -46,8 +52,23 @@ public class StudentManager {
     		
     		formatPrintAll();
             System.out.print("\nWhich Student would you like to remove? ");
-            int removeVal = verifyIndexInt();
+            int removeVal = -1;
+            
+            needInput = true;
+    		while (needInput) {
+    			try {
+    				removeVal = scnr.nextInt() - 1;
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+        		}
+    		}
+    		
+    		
             studentSystem.remove(removeVal);
+            Student.decrementNumStudents();
     	}
     	
     	// update grade
@@ -61,17 +82,38 @@ public class StudentManager {
             System.out.print("\nWhich Student's grade would you like to change? ");
             
             // error checking
-            int userIndex = verifyIndexInt();
+            int userIndex = -1;
+            needInput = true;
+    		while (needInput) {
+    			try {
+    				userIndex = scnr.nextInt() - 1;
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+        		}
+    		}
+    		
             while (userIndex >= studentSystem.size() || userIndex < 0) {
 				System.out.print("Error! Please enter a valid corresponding number: ");
-				userIndex = verifyIndexInt();
+				needInput = true;
+	    		while (needInput) {
+	    			try {
+	    				userIndex = scnr.nextInt() - 1;
+	    				needInput = false;
+	        		}
+	        		catch (InputMismatchException e) {
+	        			System.out.print("Error! Please enter a valid integer: ");
+						scnr.next();
+	        		}
+	    		}
 			}
             
             System.out.println("\n" + studentSystem.get(userIndex).getName() + "'s Current Grade: " + studentSystem.get(userIndex).getGrade());
             
             System.out.print("What would you like to change it to? ");
-            String gradeVal = scnr.next();
-            studentSystem.get(userIndex).setGrade(gradeVal);
+            studentSystem.get(userIndex).setGrade(scnr.next());
     	}
     	
     	// update class
@@ -83,7 +125,42 @@ public class StudentManager {
     		
     		formatPrintAll();
             System.out.print("\nWhich Student's class would you like to change? ");
+    	           
+            // error checking
+            int userIndex = -1;
+            needInput = true;
+    		while (needInput) {
+    			try {
+    				userIndex = scnr.nextInt() - 1;
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+        		}
+    		}
     		
+    		// more error checking
+            while (userIndex >= studentSystem.size() || userIndex < 0) {
+				System.out.print("Error! Please enter a valid corresponding number: ");
+				needInput = true;
+	    		while (needInput) {
+	    			try {
+	    				userIndex = scnr.nextInt() - 1;
+	    				needInput = false;
+	        		}
+	        		catch (InputMismatchException e) {
+	        			System.out.print("Error! Please enter a valid integer: ");
+						scnr.next();
+	        		}
+	    		}
+			}
+            
+            
+            System.out.println("\n" + studentSystem.get(userIndex).getName() + "'s Current Class: " + studentSystem.get(userIndex).getCourse());
+            
+            System.out.print("What would you like to change it to? ");
+            studentSystem.get(userIndex).setCourse(scnr.next());
     		
     	}
     	
@@ -93,25 +170,9 @@ public class StudentManager {
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     		for (int i = 0; i < studentSystem.size(); i++) {
     			studentSystem.get(i).printStudent();
-			}
-		}
-
-		// print students names
-		public void printStudentsNames() {
-			for (int i = 0; i < studentSystem.size(); i++) {
-				studentSystem.get(i).printName();
-			}
-		}
-
-		public void printSpecificStudent() {
-			for (int i = 0; i < studentSystem.size(); i++) {
-				System.out.println(i + 1 + ": " + studentSystem.get(i).getName());
-			}
-			System.out.print("Which student would you like to print? ");
-			int choice = verifyIndexInt();
-			System.out.println("------------------------------------------------");
-			studentSystem.get(choice).printStudent();
-		}
+    		} 		
+    	}
+    	
     	
     	// print one student's grade
     	public void printGrade() {
@@ -124,16 +185,90 @@ public class StudentManager {
     		System.out.print("\nWhich Student's grade would you like to view? ");
     		
     		// error checking
-    		int userIndex = verifyIndexInt();
+    		int userIndex = -1;
+    		needInput = true;
+    		while (needInput) {
+    			try {
+    				userIndex = scnr.nextInt() - 1;
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+        		}
+    		}
+    		
+    		// more error checking
     		while (userIndex >= studentSystem.size() || userIndex < 0) {
 				System.out.print("Error! Please enter a valid corresponding number: ");
-				userIndex = verifyIndexInt();
+				
+				needInput = true;
+	    		while (needInput) {
+	    			try {
+	    				userIndex = scnr.nextInt() - 1;
+	    				needInput = false;
+	        		}
+	        		catch (InputMismatchException e) {
+	        			System.out.print("Error! Please enter a valid integer: ");
+						scnr.next();
+	        		}
+	    		}
 			}
 			
             System.out.println("\nGrade: " + studentSystem.get(userIndex).getGrade());
     	}
     	
-    	
+    	// print class
+    	public void printClass() {
+    		if (studentSystem.size() == 0) {
+    			System.out.println("ERROR! You have no students in your system.");
+    			return;
+    		}
+    		
+    		formatPrintAll();
+    		System.out.print("\nWhich Student's class would you like to view? ");
+    		
+    		// error checking
+    		int userIndex = -1;
+    		needInput = true;
+    		while (needInput) {
+    			try {
+    				userIndex = scnr.nextInt() - 1;
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
+					scnr.next();
+        		}
+    		}
+    		
+    		// more error checking
+    		while (userIndex >= studentSystem.size() || userIndex < 0) {
+				System.out.print("Error! Please enter a valid corresponding number: ");
+				
+				needInput = true;
+	    		while (needInput) {
+	    			try {
+	    				userIndex = scnr.nextInt() - 1;
+	    				needInput = false;
+	        		}
+	        		catch (InputMismatchException e) {
+	        			System.out.print("Error! Please enter a valid integer: ");
+						scnr.next();
+	        		}
+	    		}
+			}
+			
+            System.out.println("\nClass: " + studentSystem.get(userIndex).getCourse());
+    	}
+
+		public void writeToFile() throws IOException {
+			FileHandler.writeFileLines(studentSystem);
+		}
+
+		public void clearFile() throws IOException {
+			FileHandler.clearFile();
+		}
   
     	// private methods
     	// way of printing students to user
@@ -141,21 +276,6 @@ public class StudentManager {
     		 for (int i = 0; i < studentSystem.size(); i++) {
                  System.out.println(i + 1 + ": " + studentSystem.get(i).getName());
              }
-    	}
-    	
-    	// error checking 
-    	private int verifyIndexInt() {
-    		int userIndex;
-    		if (scnr.hasNextInt()) {
-				userIndex = scnr.nextInt() - 1;
-			} else {
-				while (!scnr.hasNextInt()) {
-					System.out.print("Error! Please enter a valid integer: ");
-					scnr.next();
-				}
-				userIndex = scnr.nextInt() - 1;
-			}
-    		return userIndex;
     	}
     	
     	

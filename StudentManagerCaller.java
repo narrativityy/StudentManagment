@@ -1,19 +1,20 @@
+import java.io.IOException;
 import java.util.*;
 
 public class StudentManagerCaller {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		
 		Scanner scnr = new Scanner(System.in);
 		StudentManager students = new StudentManager();
         int continueVal = 0;
-        int choice;
+        int choice = 0;
 
         System.out.println("~~ Welcome to the Student Management System 1.0 ~~");
         
 		do {
-			System.out.println("            ~~ CHOOSE AN OPTION ~~");
+			System.out.println("~~ CHOOSE AN OPTION ~~");
             System.out.println("\n1. Add a Student");
             System.out.println("2. Remove a Student");
             System.out.println("3. Print Students");
@@ -21,20 +22,24 @@ public class StudentManagerCaller {
             System.out.println("5: Update a Student's Grades");
             System.out.println("6: View a Student's Class");
             System.out.println("7: Change a Student's Class");
-            System.out.println("8: Exit");
+            System.out.println("8: Change Grading Type");
+            System.out.println("9: Clear File and Exit");
+            System.out.println("10: Save File and Exit");
             System.out.print("\nChoose an action: ");
             
-            // error checking - make sure that an int is next
-            if (scnr.hasNextInt()) {
-				choice = scnr.nextInt();
-			} 
-            else {
-				while (!scnr.hasNextInt()) {
-					System.out.print("Error! Please enter a valid integer: ");
+            // error checking - make sure that an int is next    
+            boolean needInput = true;
+    		while (needInput) {
+    			try {
+    				choice = scnr.nextInt();
+    				needInput = false;
+        		}
+        		catch (InputMismatchException e) {
+        			System.out.print("Error! Please enter a valid integer: ");
 					scnr.next();
-				}
-				choice = scnr.nextInt();
-			}
+        		}
+    		}
+    		
 
             System.out.println("------------------------------------------------");
 
@@ -56,34 +61,12 @@ public class StudentManagerCaller {
                
                 // print all students info
                 case 3:
-                    System.out.println("1: Print All Students");
-                    System.out.println("2: Print a Specific Student");
-                    System.out.print("Choose an action: ");
-                    do {
-                        if (scnr.hasNextInt()) {
-                            choice = scnr.nextInt();
-                        } 
-                        else {
-                            while (!scnr.hasNextInt()) {
-                                System.out.print("Error! Please enter a valid integer: ");
-                                scnr.next();
-                            }
-                            choice = scnr.nextInt();
-                        }
-                        switch(choice) {
-                            case 1:    
-                                System.out.println("~ NOW PRINTING ALL STUDENTS ~");
-                                students.printStudents();
-                                System.out.println("------------------------------------------------");
-                                break;
-                            case 2:
-                                System.out.println("------------------------------------------------");
-                                students.printSpecificStudent();
-                                break;
-                        }
-                    } while(choice < 1 && choice > 2);
+                	System.out.println("~ NOW PRINTING ALL STUDENTS ~");
+                    students.printStudents();
+                    System.out.println("------------------------------------------------");
                     break;
-
+                
+                    
                 // print one student's grade
                 case 4:
                 	System.out.println("~ NOW PRINTING A GRADE ~");
@@ -98,17 +81,35 @@ public class StudentManagerCaller {
                     System.out.println("------------------------------------------------");
                     break;
                     
+                // print one student's class
+                case 6:
+                	System.out.println("~ NOW PRINTING A CLASS ~");
+                	students.printClass();
+                    System.out.println("------------------------------------------------");
+                    break;
+                    
                 // change class
                 case 7:
                 	System.out.println("~ NOW UPDATING A CLASS ~");
-                	
+                	students.updateClass();
                     System.out.println("------------------------------------------------");
                 	break;
                 
-                // exit menu
+                // change grading type
                 case 8:
+                	
+                	break;
+
+                case 9:
+                    students.clearFile();
                     continueVal = 1;
                     break;
+                    
+                // exit menu
+                case 10:
+                    students.writeToFile();
+                	continueVal = 1;
+                	break;
                     
                 default:
                 	System.out.println("Error! Please enter a valid option.");
@@ -116,6 +117,7 @@ public class StudentManagerCaller {
 
         } while (continueVal == 0);
         
+		System.out.println("Thank you for using the Student Management System 1.0!");
 		
 		scnr.close();
 	}
