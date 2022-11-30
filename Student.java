@@ -1,3 +1,5 @@
+package cs141.jmcrowley.Project.HannahFiles;
+
 public class Student {
     public int id;
     public String name;
@@ -27,10 +29,8 @@ public class Student {
         System.out.println();
     }
 
-    // print student name
-    public void printName() {
-        System.out.println("Name: " + name);
-    }
+    
+    
     
     // getters & setters
     public int getId() {
