@@ -1,5 +1,4 @@
-package cs141.jmcrowley.Project.HannahFiles;
-
+import java.io.*;
 import java.util.*;
 
 public class StudentManager {
@@ -8,9 +7,10 @@ public class StudentManager {
     	boolean needInput; // for error checking
 
     	// constructor - no parameters
-    	public StudentManager() {
-    		studentSystem = new ArrayList<Student>(); // now making dynamic space for customerCart
-    	}	
+    	public StudentManager() throws FileNotFoundException {
+    			studentSystem = new ArrayList<Student>(); // now making dynamic space for customerCart
+				studentSystem = FileHandler.printFile();
+			}	
     	
     	// add a student
     	public void addStudent() {	
@@ -261,6 +261,14 @@ public class StudentManager {
 			
             System.out.println("\nClass: " + studentSystem.get(userIndex).getCourse());
     	}
+
+		public void writeToFile() throws IOException {
+			FileHandler.writeFileLines(studentSystem);
+		}
+
+		public void clearFile() throws IOException {
+			FileHandler.clearFile();
+		}
   
     	// private methods
     	// way of printing students to user

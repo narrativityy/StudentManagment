@@ -1,10 +1,9 @@
-package cs141.jmcrowley.Project.HannahFiles;
-
+import java.io.IOException;
 import java.util.*;
 
 public class StudentManagerCaller {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		
 		Scanner scnr = new Scanner(System.in);
@@ -24,7 +23,8 @@ public class StudentManagerCaller {
             System.out.println("6: View a Student's Class");
             System.out.println("7: Change a Student's Class");
             System.out.println("8: Change Grading Type");
-            System.out.println("9: Exit");
+            System.out.println("9: Clear File and Exit");
+            System.out.println("10: Save File and Exit");
             System.out.print("\nChoose an action: ");
             
             // error checking - make sure that an int is next    
@@ -99,9 +99,15 @@ public class StudentManagerCaller {
                 case 8:
                 	
                 	break;
+
+                case 9:
+                    students.clearFile();
+                    continueVal = 1;
+                    break;
                     
                 // exit menu
-                case 9:
+                case 10:
+                    students.writeToFile();
                 	continueVal = 1;
                 	break;
                     
