@@ -21,10 +21,9 @@ public class StudentManagerCaller {
             System.out.println("4: View a Student's Grades");
             System.out.println("5: Update a Student's Grades");
             System.out.println("6: View a Student's Class");
-            System.out.println("7: Change a Student's Class");
-            System.out.println("8: Change Grading Type");
-            System.out.println("9: Clear File and Exit");
-            System.out.println("10: Save File and Exit");
+            System.out.println("7: Change Grading Type");
+            System.out.println("8: Clear File and Exit");
+            System.out.println("9: Save File and Exit");
             System.out.print("\nChoose an action: ");
             
             // error checking - make sure that an int is next    
@@ -94,19 +93,15 @@ public class StudentManagerCaller {
                 	students.updateClass();
                     System.out.println("------------------------------------------------");
                 	break;
-                
-                // change grading type
+                    
+                // clear file and quit
                 case 8:
-                	
-                	break;
-
-                case 9:
                     students.clearFile();
                     continueVal = 1;
                     break;
                     
                 // exit menu
-                case 10:
+                case 9:
                     students.writeToFile();
                 	continueVal = 1;
                 	break;
