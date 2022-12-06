@@ -3,12 +3,13 @@ import java.util.*;
 
 public class StudentManager {
     	private ArrayList <Student> studentSystem;
+    	private boolean isStringGraded = true;
     	Scanner scnr = new Scanner(System.in);
-    	boolean needInput; // for error checking
+    	private boolean needInput; // for error checking
 
     	// constructor - no parameters
     	public StudentManager() throws FileNotFoundException {
-    			studentSystem = new ArrayList<Student>(); // now making dynamic space for customerCart
+    			studentSystem = new ArrayList<Student>(); // now making dynamic space for studentSystem
 				studentSystem = FileHandler.printFile();
 			}	
     	
@@ -22,8 +23,7 @@ public class StudentManager {
     			try {
     				id = scnr.nextInt();
     				needInput = false;
-        		}
-        		catch (InputMismatchException e) {
+        		} catch (InputMismatchException e) {
         			System.out.print("Error! Please enter a valid integer: ");
 					scnr.next();
         		}
@@ -35,11 +35,38 @@ public class StudentManager {
             System.out.print("Enter Course: ");
             String course = scnr.nextLine();        
             System.out.print("Enter Teacher: ");
-            String teacher = scnr.nextLine();        
-            System.out.print("Enter Grade: ");
-            String grade = scnr.nextLine();
+            String teacher = scnr.nextLine();  
             
-    		Student newStudent = new Student(id, name, course, teacher, grade);     
+            // putting in values to get rid of error/initialization messages
+            String grade = "";
+            double doubleGrade = 0.0;
+            
+            // error checking
+            System.out.print("Enter Grade: ");
+            if (isStringGraded) {
+                grade = scnr.nextLine();
+            } else {
+            	needInput = true;
+            	while (needInput) {
+            		try {
+        				doubleGrade = scnr.nextDouble();
+        				needInput = false;
+            		} catch (InputMismatchException e) {
+            			System.out.print("Error! Please enter a valid double: ");
+    					scnr.next();
+            		}
+            	}
+            }
+            
+            Student newStudent;
+            if (isStringGraded) {
+            	newStudent = new Student(id, name, course, teacher, grade);   
+            	newStudent.updateGradeToDouble();
+            } else {
+            	newStudent = new Student(id, name, course, teacher, doubleGrade);   
+            	newStudent.updateGradeToString();
+            }
+            
     		studentSystem.add(newStudent);
     	}
     	
@@ -52,8 +79,8 @@ public class StudentManager {
     		
     		formatPrintAll();
             System.out.print("\nWhich Student would you like to remove? ");
-            int removeVal = -1;
             
+            int removeVal = -1;
             needInput = true;
     		while (needInput) {
     			try {
@@ -66,6 +93,20 @@ public class StudentManager {
         		}
     		}
     		
+    		while (removeVal >= studentSystem.size() || removeVal < 0) {
+				System.out.print("Error! Please enter a valid corresponding number: ");
+				needInput = true;
+	    		while (needInput) {
+	    			try {
+	    				removeVal = scnr.nextInt() - 1;
+	    				needInput = false;
+	        		}
+	        		catch (InputMismatchException e) {
+	        			System.out.print("Error! Please enter a valid integer: ");
+						scnr.next();
+	        		}
+	    		}
+			}
     		
             studentSystem.remove(removeVal);
             Student.decrementNumStudents();
@@ -110,10 +151,27 @@ public class StudentManager {
 	    		}
 			}
             
-            System.out.println("\n" + studentSystem.get(userIndex).getName() + "'s Current Grade: " + studentSystem.get(userIndex).getGrade());
-            
-            System.out.print("What would you like to change it to? ");
-            studentSystem.get(userIndex).setGrade(scnr.next());
+            // setting grade depending on grading system
+            if (this.isStringGraded) {
+            	System.out.println("\n" + studentSystem.get(userIndex).name + "'s Current Grade: " + studentSystem.get(userIndex).grade);
+             
+                System.out.print("What would you like to change it to? ");
+                studentSystem.get(userIndex).setGrade(scnr.next());
+            } else {
+            	System.out.println("\n" + studentSystem.get(userIndex).name + "'s Current Grade: " + studentSystem.get(userIndex).doubleGrade);
+
+                System.out.print("What would you like to change it to? ");
+                needInput = true;
+            	while (needInput) {
+            		try {
+                        studentSystem.get(userIndex).setDoubleGrade(scnr.nextDouble());
+        				needInput = false;
+            		} catch (InputMismatchException e) {
+            			System.out.print("Error! Please enter a valid double: ");
+    					scnr.next();
+            		}
+            	}
+            }
     	}
     	
     	// update class
@@ -157,7 +215,7 @@ public class StudentManager {
 			}
             
             
-            System.out.println("\n" + studentSystem.get(userIndex).getName() + "'s Current Class: " + studentSystem.get(userIndex).getCourse());
+            System.out.println("\n" + studentSystem.get(userIndex).name + "'s Current Class: " + studentSystem.get(userIndex).course);
             
             System.out.print("What would you like to change it to? ");
             studentSystem.get(userIndex).setCourse(scnr.next());
@@ -169,10 +227,31 @@ public class StudentManager {
     		System.out.println("TOTAL NUM OF STUDENTS: " + Student.getNumStudents());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     		for (int i = 0; i < studentSystem.size(); i++) {
-    			studentSystem.get(i).printStudent();
+    			studentSystem.get(i).printStudent(this.isStringGraded);
     		} 		
     	}
     	
+    	// print failing students
+    	public void printFailingStudents() {
+    		int counter = 0;
+    		
+    		for (int i = 0; i < studentSystem.size(); i++) {
+    			studentSystem.get(i).updateGradeToDouble(); // to make comparisons
+    			if (studentSystem.get(i).doubleGrade < 73.0) {
+    				counter++;
+    				if (this.isStringGraded) {
+        				System.out.println(counter + ") " + studentSystem.get(i).name + " : " + studentSystem.get(i).grade);
+    				} else {
+        				System.out.println(counter + ") " + studentSystem.get(i).name + " : " + studentSystem.get(i).doubleGrade);
+    				}
+    			}
+    		} 
+    		
+    		if (counter == 0) {
+    			System.out.println("There are no failing students, congrats!");
+    		}
+    		
+    	}
     	
     	// print one student's grade
     	public void printGrade() {
@@ -214,8 +293,12 @@ public class StudentManager {
 	        		}
 	    		}
 			}
-			
-            System.out.println("\nGrade: " + studentSystem.get(userIndex).getGrade());
+    		
+    		 if (this.isStringGraded) {
+    	         System.out.println("\nGrade: " + studentSystem.get(userIndex).grade);
+             } else {
+    	         System.out.println("\nGrade: " + studentSystem.get(userIndex).doubleGrade);
+             }
     	}
     	
     	// print class
@@ -259,9 +342,35 @@ public class StudentManager {
 	    		}
 			}
 			
-            System.out.println("\nClass: " + studentSystem.get(userIndex).getCourse());
+            System.out.println("\nClass: " + studentSystem.get(userIndex).course);
     	}
 
+    	// change grading type
+    	public void changeGradingType() {
+    		if (this.isStringGraded) {
+    			System.out.println("Grading system changed from Letter to 4.0 Scale!");
+    			System.out.println("\nNote: Decimal values have automatically updated:");
+    			Student.printConversionTable();
+    			
+    			// update grades
+    			for (int i = 0; i < studentSystem.size(); i++) {
+                    studentSystem.get(i).updateGradeToDouble();
+                }    	
+    			this.isStringGraded = false;
+    			
+    		} else {
+    			System.out.println("Grading system changed from 4.0 to Letter Scale!");
+    			
+    			// update grades
+    			for (int i = 0; i < studentSystem.size(); i++) {
+                    studentSystem.get(i).updateGradeToString();
+                }    	
+    			this.isStringGraded = true;
+    		}
+    		
+    	}
+    	
+    	// file methods
 		public void writeToFile() throws IOException {
 			FileHandler.writeFileLines(studentSystem);
 		}
@@ -274,7 +383,7 @@ public class StudentManager {
     	// way of printing students to user
     	private void formatPrintAll() {
     		 for (int i = 0; i < studentSystem.size(); i++) {
-                 System.out.println(i + 1 + ": " + studentSystem.get(i).getName());
+                 System.out.println(i + 1 + ": " + studentSystem.get(i).name);
              }
     	}
     	
